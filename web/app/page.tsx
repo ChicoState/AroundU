@@ -1,4 +1,4 @@
-import { HomeProvider } from '@/context/HomeContext';
+import { HomeProvider } from '@/providers/HomeProvider';
 
 import Home from './home/Home';
 

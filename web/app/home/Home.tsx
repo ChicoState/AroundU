@@ -7,15 +7,15 @@ import Sidebar from './_components/Sidebar';
 
 export default function Home() {
   return (
-    <div className="home-page flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <Card className="flex w-full max-w-6xl flex-col md:flex-row">
-        <CardContent className="flex-1 p-0 md:w-1/3 md:flex-none">
+    <Card className="flex min-h-screen items-center justify-center">
+      <Card className="flex w-full max-w-6xl flex-row">
+        <CardContent className="flex-none">
           <Sidebar />
         </CardContent>
-        <CardContent className="mt-4 flex-1 p-0 md:mt-0 md:w-2/3">
+        <CardContent className="w-2/3 flex-1">
           <Map />
         </CardContent>
       </Card>
-    </div>
+    </Card>
   );
 }

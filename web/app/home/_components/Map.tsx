@@ -3,7 +3,8 @@
 import { GoogleMap, Marker, useLoadScript } from '@react-google-maps/api';
 import { useMemo } from 'react';
 
-import { useHomeContext } from '@/context/HomeContext';
+import { Card, CardContent } from '@/components/ui/card';
+import { useHomeContext } from '@/providers/HomeProvider';
 
 const libraries: 'places'[] = ['places'];
 
@@ -52,8 +53,8 @@ export default function Map() {
   }
 
   return (
-    <section className="map-section h-full w-full p-4">
-      <div className="relative h-full w-full">
+    <Card className="h-full min-h-[600px] w-full p-4">
+      <CardContent className="relative h-full w-full">
         <GoogleMap
           zoom={12}
           center={center}
@@ -78,7 +79,7 @@ export default function Map() {
               return null;
             })}
         </GoogleMap>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 }

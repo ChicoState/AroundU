@@ -4,11 +4,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import {
-  DialogClose,
-  DialogDescription,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -51,9 +47,8 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
       </DialogDescription>
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
         <div>
-          <Label htmlFor="event-name">Event Name</Label>
+          <Label>Event Name</Label>
           <Input
-            id="event-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -61,9 +56,8 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
           />
         </div>
         <div>
-          <Label htmlFor="event-date">Date</Label>
+          <Label>Date</Label>
           <Input
-            id="event-date"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
@@ -71,9 +65,8 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
           />
         </div>
         <div>
-          <Label htmlFor="event-address">Address</Label>
+          <Label>Address</Label>
           <Input
-            id="event-address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
@@ -81,9 +74,8 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
           />
         </div>
         <div>
-          <Label htmlFor="event-description">Description</Label>
+          <Label>Description</Label>
           <Textarea
-            id="event-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter event description (optional)"
@@ -103,12 +95,7 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
           <option value="Other">Other</option>
         </select>
         <div className="flex justify-end space-x-2">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button type="submit" variant="default" disabled={loading}>
+          <Button type="submit" disabled={loading}>
             {loading ? 'Creating...' : 'Create'}
           </Button>
         </div>

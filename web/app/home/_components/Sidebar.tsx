@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 import { Slider } from '@/components/ui/slider';
-import { useHomeContext } from '@/context/HomeContext';
+import { useHomeContext } from '@/providers/HomeProvider';
 
 type Category = 'Concert' | 'Happy Hour' | 'Karaoke' | 'Yard Sale' | 'Other';
 
@@ -40,7 +40,7 @@ export default function Sidebar() {
         <CardTitle className="text-lg font-bold">Events</CardTitle>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="default">
+            <Button>
               <PlusIcon className="mr-2 h-4 w-4" />
               Create Event
             </Button>
