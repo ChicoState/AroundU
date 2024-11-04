@@ -1,11 +1,11 @@
 import { RequestHandler } from 'express';
-import { createEvent, fetchEvents } from '@/services/events';
+import eventsService from '@/services/events';
 import { EventCategory } from '@aroundu/shared';
 
-export const processPostEvents: RequestHandler = async (req, res) => {
+const processPostEvents: RequestHandler = async (req, res) => {
   try {
     const { name, date, address, description, category } = req.body;
-    const newEvent = await createEvent({
+    const newEvent = await eventsService.create({
       name,
       date,
       address,
@@ -22,10 +22,10 @@ export const processPostEvents: RequestHandler = async (req, res) => {
   }
 };
 
-export const processGetEvents: RequestHandler = async (req, res) => {
+const processGetEvents: RequestHandler = async (req, res) => {
   try {
     const { date, address, lat, lng, radius, category } = req.query;
-    const events = await fetchEvents({
+    const events = await eventsService.fetch({
       date: date as string,
       address: address as string,
       lat: parseFloat(lat as string),
@@ -42,3 +42,5 @@ export const processGetEvents: RequestHandler = async (req, res) => {
     });
   }
 };
+
+export { processPostEvents, processGetEvents };

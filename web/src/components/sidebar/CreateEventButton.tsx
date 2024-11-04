@@ -1,9 +1,7 @@
-'use client';
-
 import { useState } from 'react';
 
 import PlusIcon from '@/assets/plus.svg';
-import CreateEventDialog from '@/components/CreateEventDialog';
+import CreateEventDialog from '@/components/sidebar/CreateEventDialog';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 

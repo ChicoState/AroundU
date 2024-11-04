@@ -1,6 +1,6 @@
 'use client';
 
-import { EventCategory, EventModel } from '@aroundu/shared';
+import { EventCategory } from '@aroundu/shared';
 import {
   createContext,
   ReactNode,
@@ -11,30 +11,11 @@ import {
 } from 'react';
 
 import useFetchEvents from '@/hooks/useFetchEvents';
-
-type HomeContextState = {
-  radius: number;
-  setRadius: (radius: number) => void;
-  userLocation: {
-    lat: number;
-    lng: number;
-  } | null;
-  events: EventModel[];
-  loading: boolean;
-  error: string | null;
-  refetchEvents: () => void;
-  categoryFilter: EventCategory;
-  setCategoryFilter: (category: EventCategory) => void;
-  selectedEventId: { id: string | null; triggerCount: number };
-  setSelectedEventId: (selection: {
-    id: string | null;
-    triggerCount: number;
-  }) => void;
-};
+import HomeContextState from '@/types/context';
 
 const HomeContext = createContext<HomeContextState | undefined>(undefined);
 
-export function HomeProvider({ children }: { children: ReactNode }) {
+function HomeProvider({ children }: { children: ReactNode }) {
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
@@ -99,10 +80,13 @@ export function HomeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export const useHomeContext = () => {
+const useHomeContext = () => {
   const context = useContext(HomeContext);
   if (!context) {
     throw new Error('useHomeContext must be used within a HomeProvider');
   }
   return context;
 };
+
+export { useHomeContext };
+export default HomeProvider;

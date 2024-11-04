@@ -1,37 +1,16 @@
-import { EventCategory } from '@aroundu/shared';
+'use client';
+
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { useEffect, useRef, useState } from 'react';
 
 import { Card } from '@/components/ui/card';
+import {
+  categoryIconMap,
+  libraries,
+  mapContainerStyle,
+  mapStyles,
+} from '@/lib/map';
 import { useHomeContext } from '@/providers/HomeProvider';
-
-const libraries: 'places'[] = ['places'];
-
-const mapStyles = [
-  {
-    featureType: 'poi',
-    elementType: 'labels',
-    stylers: [{ visibility: 'off' }],
-  },
-  {
-    featureType: 'transit',
-    elementType: 'labels.icon',
-    stylers: [{ visibility: 'off' }],
-  },
-];
-
-const mapContainerStyle = {
-  width: '100%',
-  height: '100%',
-};
-
-const categoryIconMap: Record<EventCategory | string, string> = {
-  Concert: '/icons/drums.svg',
-  HappyHour: '/icons/martini.svg',
-  Karaoke: '/icons/microphone.svg',
-  YardSale: '/icons/shop.svg',
-  Other: '/icons/location.svg',
-};
 
 export default function Map() {
   const { userLocation, events, categoryFilter, selectedEventId } =
@@ -49,7 +28,6 @@ export default function Map() {
     mapRef.current = map;
   };
 
-  // Center map on user's location initially or when userLocation updates
   useEffect(() => {
     if (userLocation && !selectedEventId.id) {
       setMapCenter(userLocation);
@@ -61,7 +39,6 @@ export default function Map() {
     }
   }, [selectedEventId.id, userLocation]);
 
-  // Center and zoom in on the selected event
   useEffect(() => {
     if (selectedEventId.id) {
       const selectedEvent = events.find(
@@ -71,10 +48,10 @@ export default function Map() {
         const { coordinates } = selectedEvent.location;
         const newCenter = { lat: coordinates[1], lng: coordinates[0] };
         setMapCenter(newCenter);
-        setMapZoom(15);
+        setMapZoom(16);
         if (mapRef.current) {
           mapRef.current.setCenter(newCenter);
-          mapRef.current.setZoom(15);
+          mapRef.current.setZoom(16);
         }
       }
     }

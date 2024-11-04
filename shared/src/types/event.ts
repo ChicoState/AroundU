@@ -8,21 +8,6 @@ type EventCategory =
   | 'Yard Sale'
   | 'Other';
 
-type EventModel = Document & {
-  _id: string | ObjectId;
-  name: string;
-  date: Date;
-  address: string;
-  description?: string;
-  category: EventCategory;
-  location: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  createdAt: Date;
-  updatedAt: Date;
-};
-
 type EventData = {
   name: string;
   date: Date;
@@ -34,6 +19,13 @@ type EventData = {
     coordinates: [number, number];
   };
 };
+
+type EventModel = Document &
+  EventData & {
+    _id: string | ObjectId;
+    createdAt: Date;
+    updatedAt: Date;
+  };
 
 type EventQuery = {
   date?: Date | string;

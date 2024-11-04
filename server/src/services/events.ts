@@ -3,9 +3,7 @@ import { EventData, EventModel, EventQuery } from '@aroundu/shared';
 import axios from 'axios';
 import { FilterQuery } from 'mongoose';
 
-export const createEvent = async (
-  partialEventData: Omit<EventData, 'location'>,
-) => {
+const create = async (partialEventData: Omit<EventData, 'location'>) => {
   try {
     const { address } = partialEventData;
     const geocodeResponse = await axios.get(
@@ -37,7 +35,7 @@ export const createEvent = async (
   }
 };
 
-export const fetchEvents = async (query: EventQuery) => {
+const fetch = async (query: EventQuery) => {
   try {
     const filters: FilterQuery<EventModel> = {};
     if (query.date) {
@@ -63,4 +61,9 @@ export const fetchEvents = async (query: EventQuery) => {
   } catch (error) {
     throw new Error((error as Error).message);
   }
+};
+
+export default {
+  create,
+  fetch,
 };

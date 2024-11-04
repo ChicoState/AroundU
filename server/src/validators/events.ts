@@ -1,7 +1,7 @@
 import Joi from 'joi';
 import { RequestHandler } from 'express';
 
-export const validatePostEvents: RequestHandler = (req, res, next) => {
+const validatePostEvents: RequestHandler = (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().required(),
     date: Joi.date().iso().required(),
@@ -20,7 +20,7 @@ export const validatePostEvents: RequestHandler = (req, res, next) => {
   return next();
 };
 
-export const validateGetEvents: RequestHandler = (req, res, next) => {
+const validateGetEvents: RequestHandler = (req, res, next) => {
   const schema = Joi.object({
     date: Joi.date().iso().optional(),
     address: Joi.string().optional(),
@@ -36,3 +36,5 @@ export const validateGetEvents: RequestHandler = (req, res, next) => {
   }
   return next();
 };
+
+export { validatePostEvents, validateGetEvents };

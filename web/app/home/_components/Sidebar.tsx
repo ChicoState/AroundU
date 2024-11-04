@@ -1,8 +1,8 @@
 'use client';
 
-import SidebarEventFilters from '@/components/SidebarEventFilters';
-import SidebarEventList from '@/components/SidebarEventList';
-import SidebarHeader from '@/components/SidebarHeader';
+import SidebarEventFilters from '@/components/sidebar/SidebarEventFilters';
+import SidebarEventList from '@/components/sidebar/SidebarEventList';
+import SidebarHeader from '@/components/sidebar/SidebarHeader';
 import { Card } from '@/components/ui/card';
 import { useHomeContext } from '@/providers/HomeProvider';
 
