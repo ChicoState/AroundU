@@ -13,8 +13,13 @@ import {
 import { useHomeContext } from '@/providers/HomeProvider';
 
 export default function Map() {
-  const { userLocation, events, categoryFilter, selectedEventId } =
-    useHomeContext();
+  const {
+    userLocation,
+    events,
+    categoryFilter,
+    selectedEventId,
+    setSelectedEventId,
+  } = useHomeContext();
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
     libraries,
@@ -41,21 +46,30 @@ export default function Map() {
 
   useEffect(() => {
     if (selectedEventId.id) {
-      const selectedEvent = events.find(
-        (event) => event._id === selectedEventId.id,
-      );
-      if (selectedEvent) {
-        const { coordinates } = selectedEvent.location;
-        const newCenter = { lat: coordinates[1], lng: coordinates[0] };
-        setMapCenter(newCenter);
+      if (selectedEventId.id === 'userLocation' && userLocation) {
+        setMapCenter(userLocation);
         setMapZoom(16);
         if (mapRef.current) {
-          mapRef.current.setCenter(newCenter);
+          mapRef.current.setCenter(userLocation);
           mapRef.current.setZoom(16);
+        }
+      } else {
+        const selectedEvent = events.find(
+          (event) => event._id === selectedEventId.id,
+        );
+        if (selectedEvent) {
+          const { coordinates } = selectedEvent.location;
+          const newCenter = { lat: coordinates[1], lng: coordinates[0] };
+          setMapCenter(newCenter);
+          setMapZoom(16);
+          if (mapRef.current) {
+            mapRef.current.setCenter(newCenter);
+            mapRef.current.setZoom(16);
+          }
         }
       }
     }
-  }, [selectedEventId, events]);
+  }, [selectedEventId.triggerCount, events, selectedEventId.id, userLocation]);
 
   if (loadError) {
     return (
@@ -91,6 +105,12 @@ export default function Map() {
             }}
             position={userLocation}
             title="Your Location"
+            onClick={() => {
+              setSelectedEventId({
+                id: 'userLocation',
+                triggerCount: selectedEventId.triggerCount + 1,
+              });
+            }}
           />
         )}
         {events
@@ -109,6 +129,12 @@ export default function Map() {
                   }}
                   key={event._id.toString()}
                   position={{ lat, lng }}
+                  onClick={() => {
+                    setSelectedEventId({
+                      id: event._id.toString(),
+                      triggerCount: selectedEventId.triggerCount + 1,
+                    });
+                  }}
                 />
               );
             }

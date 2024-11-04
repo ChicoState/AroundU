@@ -11,7 +11,7 @@ type RadiusSliderProps = {
 export default function RadiusSlider({ radius, setRadius }: RadiusSliderProps) {
   const [tempRadius, setTempRadius] = useState(radius);
   return (
-    <Card>
+    <Card className="w-full">
       <CardDescription className="mb-1 text-sm font-semibold text-black">
         Radius: {tempRadius} km
       </CardDescription>

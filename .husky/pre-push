@@ -1,2 +1,2 @@
 echo "Running pre-push build and test..."
-./setup.sh --all
+node setup.js --all

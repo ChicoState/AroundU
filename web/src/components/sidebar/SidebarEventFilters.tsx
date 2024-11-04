@@ -2,7 +2,7 @@ import { EventCategory } from '@aroundu/shared';
 import React from 'react';
 
 import FilterIcon from '@/assets/filter.svg';
-// import SearchIcon from '@/assets/search.svg';
+import SearchIcon from '@/assets/search.svg';
 import { Card } from '@/components/ui/card';
 import {
   Select,
@@ -12,14 +12,16 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+import { Input } from '../ui/input';
 import RadiusSlider from './RadiusSlider';
-// import { Button } from './ui/button';
 
 type SidebarEventFiltersProps = {
   radius: number;
   setRadius: (radius: number) => void;
   categoryFilter: EventCategory;
   setCategoryFilter: (category: EventCategory) => void;
+  searchFilter: string;
+  setSearchFilter: (search: string) => void;
 };
 
 export default function SidebarEventFilters({
@@ -27,6 +29,8 @@ export default function SidebarEventFilters({
   setRadius,
   categoryFilter,
   setCategoryFilter,
+  searchFilter,
+  setSearchFilter,
 }: SidebarEventFiltersProps) {
   return (
     <Card className="flex gap-3 pt-3">
@@ -48,9 +52,15 @@ export default function SidebarEventFilters({
           <SelectItem value="Other">Other</SelectItem>
         </SelectContent>
       </Select>
-      {/* <Button className="mt-[.3rem] h-fit rounded-full bg-transparent p-1 text-black shadow-none hover:bg-hover">
-        <SearchIcon className="h-[18px] w-[18px]" />
-      </Button> */}
+      <Card className="relative w-full">
+        <SearchIcon className="absolute left-[.65rem] top-[1.125rem] h-[18px] w-[18px] -translate-y-1/2 transform text-black" />
+        <Input
+          className="w-full rounded border border-gray-300 p-2 pl-9 placeholder:text-black focus:border-blue-500 focus:outline-none"
+          placeholder="Search..."
+          value={searchFilter}
+          onChange={(e) => setSearchFilter(e.target.value)}
+        />
+      </Card>
     </Card>
   );
 }
