@@ -13,7 +13,7 @@
     "test": "echo \"run tests\"",
     "check": "npm run format && npm run lint",
     "format": "prettier --log-level warn --write \"src/**/*.{ts,tsx,json}\"",
-    "lint": "eslint . --fix --ext .ts,.tsx"
+    "lint": "eslint . --fix"
   },
   "license": "MIT",
   "dependencies": {
