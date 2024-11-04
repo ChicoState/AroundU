@@ -12,19 +12,23 @@ AroundU is an app that allows users to browse upcoming and ongoing local events.
 git pull upstream main
 ```
 
-### 2. Install Dependencies
+### 2. Run Setup Script
 
-To install dependencies in the root, `/server`, and `/web` directories:
-
-```bash
-npm install && cd server && npm install && cd ../web && npm install && cd ..
-```
-
-### 3. Build and Start Containers
+Use the `./setup.sh` script to install dependencies, build, and start the Docker containers. For development, simply run:
 
 ```bash
-docker compose up -d --build
+./setup.sh
 ```
+
+This will start the app in development mode, which includes **Hot Module Replacement (HMR)** for both the **web server** and **backend server**. HMR allows the servers to automatically reload when you make changes to your code, saving time by eliminating the need for full container restarts during development.
+
+If you’d prefer to minimize memory usage and don’t need HMR, use the production configuration:
+
+```bash
+./setup.sh --prod
+```
+
+The `--prod` flag disables HMR, which can help optimize resource usage.
 
 ## Development
 
@@ -51,10 +55,23 @@ db.events.find()
 
 ### Stop and Rebuild Containers After Dependency Changes
 
+If you make changes to dependencies (like `node_modules`) or configuration files that are not mapped to the containers as volumes—such as `tailwind.config.ts`, `tsconfig.json`, or package files—you’ll need to fully stop and rebuild the containers to apply these updates. This can be done with the following command:
+
 ```bash
-docker compose down -v
-docker compose up -d --build
+./setup.sh -v
 ```
+
+The `-v` flag stops all containers, removes volumes, and then rebuilds and restarts everything to ensure that dependency and configuration changes are properly applied.
+
+### Make `setup.sh` Executable
+
+If you encounter a "permission denied" error when running `./setup.sh`, make the script executable with:
+
+```bash
+chmod +x setup.sh
+```
+
+Then, try running the script again.
 
 ## Commit Message Guidelines
 

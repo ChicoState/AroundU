@@ -1,2 +1,2 @@
-cd web && npm run build && npm run test
-cd ../server && npm run build && npm run test
+echo "Running pre-push build and test..."
+./setup.sh --all

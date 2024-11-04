@@ -1,0 +1,18 @@
+FROM node:20.17.0-alpine
+
+WORKDIR /app/shared
+COPY ./shared/package*.json ./
+RUN npm install
+COPY ./shared/src ./src
+COPY ./shared/tsconfig.json ./
+RUN npm run build
+
+WORKDIR /app/server
+COPY ./server/package*.json ./
+RUN npm install
+COPY ./server/src ./src
+COPY ./server/tsconfig.json ./
+RUN npm run build
+
+EXPOSE 3001
+CMD ["npm", "start"]

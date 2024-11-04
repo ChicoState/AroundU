@@ -1,8 +1,34 @@
-import Event, { EventType, EventData, EventQuery } from '@/models/Event';
+import Event from '@/models/Event';
+import { EventData, EventModel, EventQuery } from '@aroundu/shared';
+import axios from 'axios';
 import { FilterQuery } from 'mongoose';
 
-export const createEvent = async (eventData: EventData) => {
+export const createEvent = async (
+  partialEventData: Omit<EventData, 'location'>,
+) => {
   try {
+    const { address } = partialEventData;
+    const geocodeResponse = await axios.get(
+      'https://maps.googleapis.com/maps/api/geocode/json',
+      {
+        params: {
+          address,
+          key: process.env.GOOGLE_MAPS_API_KEY,
+        },
+      },
+    );
+    if (geocodeResponse.data.status !== 'OK') {
+      throw new Error('Invalid address or unable to geocode.');
+    }
+    const { location } = geocodeResponse.data.results[0].geometry;
+    const { lat, lng } = location;
+    const eventData = {
+      ...partialEventData,
+      location: {
+        type: 'Point',
+        coordinates: [lng, lat],
+      },
+    };
     const event = new Event(eventData);
     await event.save();
     return event;
@@ -13,7 +39,7 @@ export const createEvent = async (eventData: EventData) => {
 
 export const fetchEvents = async (query: EventQuery) => {
   try {
-    const filters: FilterQuery<EventType> = {};
+    const filters: FilterQuery<EventModel> = {};
     if (query.date) {
       filters.date = new Date(query.date);
     }
@@ -22,7 +48,7 @@ export const fetchEvents = async (query: EventQuery) => {
     }
     if (query.lat && query.lng && query.radius) {
       const radiusInMeters = query.radius * 1000;
-      filters.coordinates = {
+      filters.location = {
         $near: {
           $geometry: {
             type: 'Point',

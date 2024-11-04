@@ -1,5 +1,4 @@
-'use client';
-
+import { EventCategory } from '@aroundu/shared';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -9,6 +8,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import useCreateEvent from '@/hooks/useCreateEvent';
+import { useHomeContext } from '@/providers/HomeProvider';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 type CreateEventDialogProps = {
   onClose: () => void;
@@ -19,20 +27,23 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
   const [date, setDate] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Other');
+  const [category, setCategory] = useState<Omit<EventCategory, 'All'>>('Other');
   const { createEvent, loading, error } = useCreateEvent();
+  const { refetchEvents } = useHomeContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const dateObj = new Date(date);
       await createEvent({
         name,
-        date,
+        date: dateObj,
         address,
         description: description || undefined,
-        category,
+        category: category as Partial<EventCategory>,
       });
       toast.success('Event created successfully');
+      refetchEvents();
       onClose();
     } catch {
       toast.error(`Failed to create event: ${error}`);
@@ -56,9 +67,9 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
           />
         </div>
         <div>
-          <Label>Date</Label>
+          <Label>Date and Time</Label>
           <Input
-            type="date"
+            type="datetime-local"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
@@ -81,24 +92,26 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
             placeholder="Enter event description (optional)"
           />
         </div>
-        <Label htmlFor="event-category">Category</Label>
-        <select
-          id="event-category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="block w-full rounded-md border p-2"
+        <Label>Category</Label>
+        <Select onValueChange={(value: EventCategory) => setCategory(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            <SelectItem value="Concert">Concert</SelectItem>
+            <SelectItem value="Happy Hour">Happy Hour</SelectItem>
+            <SelectItem value="Karaoke">Karaoke</SelectItem>
+            <SelectItem value="Yard Sale">Yard Sale</SelectItem>
+            <SelectItem value="Other">Other</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          className="ml-auto flex space-x-2"
+          type="submit"
+          disabled={loading}
         >
-          <option value="Concert">Concert</option>
-          <option value="Happy Hour">Happy Hour</option>
-          <option value="Karaoke">Karaoke</option>
-          <option value="Yard Sale">Yard Sale</option>
-          <option value="Other">Other</option>
-        </select>
-        <div className="flex justify-end space-x-2">
-          <Button type="submit" disabled={loading}>
-            {loading ? 'Creating...' : 'Create'}
-          </Button>
-        </div>
+          {loading ? 'Creating...' : 'Create'}
+        </Button>
       </form>
     </>
   );

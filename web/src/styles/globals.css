@@ -4,15 +4,17 @@
 
 @layer base {
   :root {
+    --ring: 210 100% 50%; /* Blue */
+
     /* Light Mode Variables */
     --background: 0 0% 100%; /* White */
     --foreground: 0 0% 0%; /* Black */
 
-    --card-background: 0 0% 100%; /* White */
+    --card: 0 0% 100%; /* White */
     --card-foreground: 0 0% 0%; /* Black */
 
-    --muted-background: 0 0% 98%; /* Lighter white */
-    --muted-foreground: 0 0% 60%; /* Gray */
+    --muted: 0 0% 98%; /* Lighter white */
+    --muted-foreground: 220 10% 40%; /* Gray */
 
     --primary: 0 0% 0%; /* Black */
     --primary-foreground: 0 0% 100%; /* White */
@@ -20,35 +22,35 @@
     --secondary: 210 100% 50%; /* Blue */
     --secondary-foreground: 0 0% 100%; /* White */
 
-    --accent: 210 100% 50%; /* Blue */
+    --accent: 210 100% 59%; /* Blue */
     --accent-foreground: 0 0% 100%; /* White */
 
+    --hover: 0 0% 92%; /* Light gray */
+    --hover-minimal: 0 0% 97%; /* Light gray */
     --border: 0 0% 96.9%; /* Light gray */
-    --hover: 210 16% 90%; /* Light gray */
-    --input: 210 16% 90%; /* Light gray */
-    --ring: 210 100% 50%; /* Blue */
-
-    --radius: 0.5rem; /* Default border radius */
+    --input: 0 0% 96.9%; /* Light gray */
   }
 
   .dark {
+    --ring: 210 100% 50%; /* Blue */
+
     /* Dark Mode Variables */
-    --background: 222.2 84% 5%; /* Black */
-    --foreground: 0 0% 100%; /* White */
+    --background: 0 0% 0%; /* Black */
+    --foreground: 200 1% 92%; /* White */
 
-    --card-background: 222.2 84% 5%; /* Black */
-    --card-foreground: 0 0% 100%; /* White */
+    --card: 222.2 84% 5%; /* Black */
+    --card-foreground: 200 1% 92%; /* White */
 
-    --muted-background: 222.2 84% 10%; /* Darker black */
-    --muted-foreground: 0 0% 60%; /* Gray */
+    --muted: 220 15% 14%; /* Darker black */
+    --muted-foreground: 210 7% 49%; /* Gray */
 
     --primary: 0 0% 100%; /* White */
     --primary-foreground: 0 0% 0%; /* Black */
 
-    --border: 210 16% 20%; /* Darker gray */
-    --hover: 210 16% 20%; /* Darker gray */
+    --hover: 0 0% 10%; /* Darker gray */
+    --hover-minimal: 0 0% 3%; /* Darker gray */
+    --border: 210 11% 21%; /* Darker gray */
     --input: 210 16% 20%; /* Darker gray */
-    --ring: 210 100% 50%; /* Blue */
   }
 }
 
@@ -60,5 +62,10 @@
   body {
     @apply bg-background text-foreground;
     color: var(--foreground);
+  }
+
+  svg {
+    fill: none;
+    stroke: none;
   }
 }

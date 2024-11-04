@@ -1,0 +1,28 @@
+FROM node:20.17.0-slim
+
+WORKDIR /app/shared
+COPY ./shared/package*.json ./
+RUN npm install
+COPY ./shared/src ./src
+COPY ./shared/tsconfig.json ./
+RUN npm run build
+
+WORKDIR /app/web
+COPY ./web/package*.json ./
+RUN npm install
+COPY ./web/index.js ./
+COPY ./web/public ./public
+COPY ./web/app ./app
+COPY ./web/src ./src
+COPY ./web/tsconfig.json ./
+COPY ./web/next.config.js ./
+COPY ./web/tailwind.config.ts ./
+COPY ./web/postcss.config.cjs ./
+COPY ./web/next-env.d.ts ./
+COPY ./web/svg.d.ts ./
+COPY ./web/nodemon.json ./
+COPY ./web/components.json ./
+RUN npm run build
+
+EXPOSE 3000
+CMD ["npm", "run", "dev"]

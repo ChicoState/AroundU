@@ -1,2 +1,2 @@
-cd web && npm run check
-cd ../server && npm run check
+echo "Running pre-commit checks..."
+./setup.sh --check

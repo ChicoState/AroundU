@@ -1,11 +1,10 @@
 'use client';
 
+import { EventData } from '@aroundu/shared';
 import { useState } from 'react';
 
-import { EventData } from '@/types/Event';
-
 type UseCreateEventReturn = {
-  createEvent: (eventData: EventData) => Promise<void>;
+  createEvent: (eventData: Omit<EventData, 'location'>) => Promise<void>;
   loading: boolean;
   error: string | null;
 };
@@ -14,7 +13,7 @@ export default function useCreateEvent(): UseCreateEventReturn {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createEvent = async (eventData: EventData) => {
+  const createEvent = async (eventData: Omit<EventData, 'location'>) => {
     setLoading(true);
     setError(null);
     try {
