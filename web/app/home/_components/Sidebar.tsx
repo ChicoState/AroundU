@@ -15,6 +15,8 @@ export default function Sidebar() {
     error,
     categoryFilter,
     setCategoryFilter,
+    searchFilter,
+    setSearchFilter,
   } = useHomeContext();
 
   return (
@@ -23,6 +25,8 @@ export default function Sidebar() {
       <SidebarEventFilters
         categoryFilter={categoryFilter}
         setCategoryFilter={setCategoryFilter}
+        searchFilter={searchFilter}
+        setSearchFilter={setSearchFilter}
         radius={radius}
         setRadius={setRadius}
       />
@@ -32,6 +36,7 @@ export default function Sidebar() {
         loading={loading}
         error={error}
         categoryFilter={categoryFilter}
+        searchFilter={searchFilter}
       />
     </Card>
   );

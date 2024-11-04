@@ -1,6 +1,6 @@
 const { execSync } = require('child_process');
 const path = require('path');
-const fs = require('fs');
+const os = require('os');
 
 const args = process.argv.slice(2);
 const ENVIRONMENT = args.includes('--prod') ? 'prod' : 'dev';
@@ -15,9 +15,12 @@ const directories =
     ? ['shared', 'server', 'web']
     : ['shared', 'server', 'web'].filter((dir) => args.includes(`--${dir}`));
 
-// Cross-platform support for Docker Compose
+// Detect if running in WSL
+const isWSL = () => os.release().toLowerCase().includes('microsoft');
+
+// Adjust Docker Compose command for WSL
 const composeCommand =
-  process.platform === 'win32' ? 'docker-compose' : 'docker compose';
+  isWSL() || process.platform !== 'win32' ? 'docker compose' : 'docker-compose';
 
 // Install root dependencies
 console.log('======================================');
@@ -31,21 +34,30 @@ const runSetup = (dir) => {
   console.log(`🔧 Setting up ${dir}`);
   console.log('--------------------------------------');
 
-  const dirPath = path.join(__dirname, dir);
-  process.chdir(dirPath);
+  // Get the absolute path to the directory
+  const dirPath = path.resolve(__dirname, dir);
 
-  if (CHECK) {
-    console.log(`▶️  Running check in ${dir}`);
-    execSync('npm run check', { stdio: 'inherit' });
-  } else {
-    console.log(`▶️  Full setup (check, install, build, test) in ${dir}`);
-    execSync('npm run check', { stdio: 'inherit' });
-    execSync('npm install', { stdio: 'inherit' });
-    execSync('npm run build', { stdio: 'inherit' });
-    execSync('npm run test', { stdio: 'inherit' });
+  try {
+    // Move to the directory and run commands
+    process.chdir(dirPath);
+
+    if (CHECK) {
+      console.log(`▶️  Running check in ${dir}`);
+      execSync('npm run check', { stdio: 'inherit' });
+    } else {
+      console.log(`▶️  Full setup (check, install, build, test) in ${dir}`);
+      execSync('npm run check', { stdio: 'inherit' });
+      execSync('npm install', { stdio: 'inherit' });
+      execSync('npm run build', { stdio: 'inherit' });
+      execSync('npm run test', { stdio: 'inherit' });
+    }
+  } catch (error) {
+    console.error(`❌ Error in ${dir}: ${error.message}`);
+    process.exit(1);
+  } finally {
+    // Return to the root directory after setup
+    process.chdir(__dirname);
   }
-
-  process.chdir(__dirname);
 };
 
 // Run setup or check for each specified directory

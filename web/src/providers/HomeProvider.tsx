@@ -28,6 +28,7 @@ function HomeProvider({ children }: { children: ReactNode }) {
   );
 
   const [categoryFilter, setCategoryFilter] = useState<EventCategory>('All');
+  const [searchFilter, setSearchFilter] = useState<string>('');
   const [selectedEventId, setSelectedEventId] = useState<{
     id: string | null;
     triggerCount: number;
@@ -60,6 +61,8 @@ function HomeProvider({ children }: { children: ReactNode }) {
       refetchEvents: refetch,
       categoryFilter,
       setCategoryFilter,
+      searchFilter,
+      setSearchFilter,
       selectedEventId,
       setSelectedEventId,
     }),
@@ -71,6 +74,7 @@ function HomeProvider({ children }: { children: ReactNode }) {
       error,
       refetch,
       categoryFilter,
+      searchFilter,
       selectedEventId,
     ],
   );

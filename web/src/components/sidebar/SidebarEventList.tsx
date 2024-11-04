@@ -9,6 +9,7 @@ type SidebarEventListProps = {
   loading: boolean;
   error: string | null;
   categoryFilter: EventCategory;
+  searchFilter: string;
 };
 
 export default function SidebarEventList({
@@ -17,6 +18,7 @@ export default function SidebarEventList({
   loading,
   error,
   categoryFilter,
+  searchFilter,
 }: SidebarEventListProps) {
   const { setSelectedEventId, selectedEventId } = useHomeContext();
 
@@ -30,6 +32,11 @@ export default function SidebarEventList({
       {events
         .filter((event) =>
           categoryFilter !== 'All' ? event.category === categoryFilter : true,
+        )
+        .filter((event) =>
+          searchFilter !== ''
+            ? event.name.toLowerCase().includes(searchFilter.toLowerCase())
+            : true,
         )
         .map((event) => (
           <Card

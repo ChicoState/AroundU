@@ -19,6 +19,8 @@ type EventsFiltersContext = {
   setRadius: (radius: number) => void;
   categoryFilter: EventCategory;
   setCategoryFilter: (category: EventCategory) => void;
+  searchFilter: string;
+  setSearchFilter: (search: string) => void;
 };
 
 type EventsContext = EventsQueryContext &
