@@ -1,0 +1,56 @@
+services:
+  aroundu-mongo:
+    image: mongo:latest
+    container_name: aroundu-mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+  aroundu-server:
+    build:
+      context: ./
+      dockerfile: ./server/Dockerfile.server.prod
+    container_name: aroundu-server
+    ports:
+      - '3001:3001'
+    volumes:
+      - ./shared:/app/shared/src
+      - ./server/src:/app/server/src
+    networks:
+      - app-network
+    env_file:
+      - ./server/.env
+    depends_on:
+      aroundu-mongo:
+        condition: service_started
+
+  aroundu-web:
+    build:
+      context: ./
+      dockerfile: ./web/Dockerfile.web.prod
+    container_name: aroundu-web
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./shared:/app/shared/src
+      - ./web/public:/app/web/public
+      - ./web/app:/app/web/app
+      - ./web/src:/app/web/src
+    networks:
+      - app-network
+    env_file:
+      - ./web/.env
+    depends_on:
+      aroundu-server:
+        condition: service_started
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+    driver: local

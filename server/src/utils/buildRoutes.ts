@@ -1,7 +1,14 @@
-import { Router } from 'express';
-import Route from '@/types/route';
+import { Router, RequestHandler } from 'express';
 
-const buildRoutes = (routes: Route[]): Router => {
+type RouteConfig = {
+  path: string;
+  method: 'get' | 'post' | 'put' | 'delete';
+  validator: RequestHandler;
+  middleware: RequestHandler[];
+  controller: RequestHandler;
+};
+
+const buildRoutes = (routes: RouteConfig[]): Router => {
   const router = Router();
   routes.forEach((route) => {
     const { method, path, validator, middleware, controller } = route;

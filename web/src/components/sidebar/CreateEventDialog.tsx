@@ -1,18 +1,22 @@
-'use client';
-
+import { EventCategory } from '@aroundu/shared';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import {
-  DialogClose,
-  DialogDescription,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import useCreateEvent from '@/hooks/useCreateEvent';
+import { useHomeContext } from '@/providers/HomeProvider';
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
 
 type CreateEventDialogProps = {
   onClose: () => void;
@@ -23,20 +27,23 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
   const [date, setDate] = useState('');
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('Other');
+  const [category, setCategory] = useState<Omit<EventCategory, 'All'>>('Other');
   const { createEvent, loading, error } = useCreateEvent();
+  const { refetchEvents } = useHomeContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const dateObj = new Date(date);
       await createEvent({
         name,
-        date,
+        date: dateObj,
         address,
         description: description || undefined,
-        category,
+        category: category as Partial<EventCategory>,
       });
       toast.success('Event created successfully');
+      refetchEvents();
       onClose();
     } catch {
       toast.error(`Failed to create event: ${error}`);
@@ -51,9 +58,8 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
       </DialogDescription>
       <form onSubmit={handleSubmit} className="mt-4 space-y-4">
         <div>
-          <Label htmlFor="event-name">Event Name</Label>
+          <Label>Event Name</Label>
           <Input
-            id="event-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -61,19 +67,17 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
           />
         </div>
         <div>
-          <Label htmlFor="event-date">Date</Label>
+          <Label>Date and Time</Label>
           <Input
-            id="event-date"
-            type="date"
+            type="datetime-local"
             value={date}
             onChange={(e) => setDate(e.target.value)}
             required
           />
         </div>
         <div>
-          <Label htmlFor="event-address">Address</Label>
+          <Label>Address</Label>
           <Input
-            id="event-address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             required
@@ -81,37 +85,33 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
           />
         </div>
         <div>
-          <Label htmlFor="event-description">Description</Label>
+          <Label>Description</Label>
           <Textarea
-            id="event-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter event description (optional)"
           />
         </div>
-        <Label htmlFor="event-category">Category</Label>
-        <select
-          id="event-category"
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="block w-full rounded-md border p-2"
+        <Label>Category</Label>
+        <Select onValueChange={(value: EventCategory) => setCategory(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent className="bg-white">
+            <SelectItem value="Concert">Concert</SelectItem>
+            <SelectItem value="Happy Hour">Happy Hour</SelectItem>
+            <SelectItem value="Karaoke">Karaoke</SelectItem>
+            <SelectItem value="Yard Sale">Yard Sale</SelectItem>
+            <SelectItem value="Other">Other</SelectItem>
+          </SelectContent>
+        </Select>
+        <Button
+          className="ml-auto flex space-x-2"
+          type="submit"
+          disabled={loading}
         >
-          <option value="Concert">Concert</option>
-          <option value="Happy Hour">Happy Hour</option>
-          <option value="Karaoke">Karaoke</option>
-          <option value="Yard Sale">Yard Sale</option>
-          <option value="Other">Other</option>
-        </select>
-        <div className="flex justify-end space-x-2">
-          <DialogClose asChild>
-            <Button type="button" variant="secondary">
-              Cancel
-            </Button>
-          </DialogClose>
-          <Button type="submit" variant="default" disabled={loading}>
-            {loading ? 'Creating...' : 'Create'}
-          </Button>
-        </div>
+          {loading ? 'Creating...' : 'Create'}
+        </Button>
       </form>
     </>
   );

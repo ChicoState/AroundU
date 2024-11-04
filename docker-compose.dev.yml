@@ -11,30 +11,38 @@ services:
 
   aroundu-server:
     build:
-      context: ./server
+      context: ./
+      dockerfile: ./server/Dockerfile.server.dev
     container_name: aroundu-server
     ports:
       - '3001:3001'
     volumes:
-      - ./server:/app
-      - /app/node_modules
+      - ./shared:/app/shared/src
+      - ./server/src:/app/server/src
     networks:
       - app-network
+    env_file:
+      - ./server/.env
     depends_on:
       aroundu-mongo:
         condition: service_started
 
   aroundu-web:
     build:
-      context: ./web
+      context: ./
+      dockerfile: ./web/Dockerfile.web.dev
     container_name: aroundu-web
     ports:
       - '3000:3000'
     volumes:
-      - ./web:/app
-      - /app/node_modules
+      - ./shared:/app/shared/src
+      - ./web/public:/app/web/public
+      - ./web/app:/app/web/app
+      - ./web/src:/app/web/src
     networks:
       - app-network
+    env_file:
+      - ./web/.env
     depends_on:
       aroundu-server:
         condition: service_started

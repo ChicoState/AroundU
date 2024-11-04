@@ -1,5 +1,6 @@
 'use client';
 
+import { EventCategory } from '@aroundu/shared';
 import {
   createContext,
   ReactNode,
@@ -10,32 +11,27 @@ import {
 } from 'react';
 
 import useFetchEvents from '@/hooks/useFetchEvents';
-import { EventType } from '@/types/Event';
-
-type HomeContextState = {
-  radius: number;
-  setRadius: (radius: number) => void;
-  userLocation: {
-    lat: number;
-    lng: number;
-  } | null;
-  events: EventType[];
-  loading: boolean;
-  error: string | null;
-  categoryFilter: string | null;
-  setCategoryFilter: (category: string | null) => void;
-};
+import HomeContextState from '@/types/context';
 
 const HomeContext = createContext<HomeContextState | undefined>(undefined);
 
-export function HomeProvider({ children }: { children: ReactNode }) {
-  const [radius, setRadius] = useState<number>(50);
-  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
+function HomeProvider({ children }: { children: ReactNode }) {
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
-  const { events, loading, error } = useFetchEvents(radius, userLocation);
+
+  const [radius, setRadius] = useState<number>(3);
+  const { events, loading, error, refetch } = useFetchEvents(
+    radius,
+    userLocation,
+  );
+
+  const [categoryFilter, setCategoryFilter] = useState<EventCategory>('All');
+  const [selectedEventId, setSelectedEventId] = useState<{
+    id: string | null;
+    triggerCount: number;
+  }>({ id: null, triggerCount: 0 });
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -55,16 +51,28 @@ export function HomeProvider({ children }: { children: ReactNode }) {
 
   const contextValue = useMemo(
     () => ({
+      userLocation,
       radius,
       setRadius,
-      userLocation,
       events,
       loading,
       error,
+      refetchEvents: refetch,
       categoryFilter,
       setCategoryFilter,
+      selectedEventId,
+      setSelectedEventId,
     }),
-    [radius, userLocation, events, loading, error, categoryFilter],
+    [
+      userLocation,
+      radius,
+      events,
+      loading,
+      error,
+      refetch,
+      categoryFilter,
+      selectedEventId,
+    ],
   );
 
   return (
@@ -72,10 +80,13 @@ export function HomeProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export const useHomeContext = () => {
+const useHomeContext = () => {
   const context = useContext(HomeContext);
   if (!context) {
     throw new Error('useHomeContext must be used within a HomeProvider');
   }
   return context;
 };
+
+export { useHomeContext };
+export default HomeProvider;

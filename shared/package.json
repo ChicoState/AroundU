@@ -1,0 +1,35 @@
+{
+  "name": "@aroundu/shared",
+  "version": "1.0.1",
+  "engines": {
+    "node": "20.17.0",
+    "npm": "10.8.2"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc && tsc-alias",
+    "test": "echo \"run tests\"",
+    "check": "npm run format && npm run lint",
+    "format": "prettier --log-level warn --write \"src/**/*.{ts,tsx,json}\"",
+    "lint": "eslint . --fix --ext .ts,.tsx"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.16.2",
+    "@typescript-eslint/eslint-plugin": "^8.6.0",
+    "@typescript-eslint/parser": "^8.6.0",
+    "eslint": "^8.2.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "mongoose": "^8.8.0"
+  }
+}

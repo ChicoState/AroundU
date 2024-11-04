@@ -1,41 +1,7 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import { EventModel } from '@aroundu/shared';
+import mongoose, { Schema } from 'mongoose';
 
-export type EventType = Document & {
-  name: string;
-  date: Date;
-  address: string;
-  description?: string;
-  category: string;
-  coordinates: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  createdAt: Date;
-  updatedAt: Date;
-};
-
-export type EventData = {
-  name: string;
-  date: string;
-  address: string;
-  description?: string;
-  category: string;
-  coordinates: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-};
-
-export type EventQuery = {
-  date?: Date | string;
-  address?: string;
-  lat?: number;
-  lng?: number;
-  radius?: number;
-  category?: string;
-};
-
-const EventSchema: Schema = new Schema<EventType>(
+const EventSchema: Schema = new Schema<EventModel>(
   {
     name: {
       type: String,
@@ -61,7 +27,7 @@ const EventSchema: Schema = new Schema<EventType>(
       enum: ['Concert', 'Happy Hour', 'Karaoke', 'Yard Sale', 'Other'],
       trim: true,
     },
-    coordinates: {
+    location: {
       type: {
         type: String,
         enum: ['Point'],
@@ -78,7 +44,7 @@ const EventSchema: Schema = new Schema<EventType>(
   },
 );
 
-EventSchema.index({ coordinates: '2dsphere' });
+EventSchema.index({ location: '2dsphere' });
 
-const Event = mongoose.model<EventType>('Event', EventSchema);
+const Event = mongoose.model<EventModel>('Event', EventSchema);
 export default Event;

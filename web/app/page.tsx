@@ -1,7 +1,7 @@
-import { HomeProvider } from '@/context/HomeContext';
+import Navigation from '@/components/navigation/Navigation';
+import HomeProvider from '@/providers/HomeProvider';
 
 import Home from './home/Home';
-import Navigation from './navigation/Navigation';
 
 export default function RootPage() {
   return (
