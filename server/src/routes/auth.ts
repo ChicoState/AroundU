@@ -13,6 +13,15 @@ import {
 
 const authRoutes = buildRoutes([
   {
+    method: 'get',
+    path: '',
+    validator: (_req, _res, next) => next(),
+    middleware: [],
+    controller: (req, res) => {
+      res.status(200).json({ data: !!req.session.userId });
+    },
+  },
+  {
     method: 'post',
     path: '/sign-up',
     validator: validateSignUp,

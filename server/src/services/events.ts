@@ -15,7 +15,7 @@ const create = async (partialEventData: Omit<EventData, 'location'>) => {
         },
       },
     );
-    if (geocodeResponse.data.status !== 'OK') {
+    if (geocodeResponse.data.status === 'ZERO_RESULTS') {
       throw new Error('Invalid address or unable to geocode.');
     }
     const { location } = geocodeResponse.data.results[0].geometry;

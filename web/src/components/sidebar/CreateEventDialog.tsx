@@ -28,7 +28,7 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
   const [address, setAddress] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<Omit<EventCategory, 'All'>>('Other');
-  const { createEvent, loading, error } = useCreateEvent();
+  const { createEvent, loading } = useCreateEvent();
   const { refetchEvents } = useHomeContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,8 +45,8 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
       toast.success('Event created successfully');
       refetchEvents();
       onClose();
-    } catch {
-      toast.error(`Failed to create event: ${error}`);
+    } catch (err) {
+      toast.error(`Failed to create event: ${(err as Error).message}`);
     }
   };
 

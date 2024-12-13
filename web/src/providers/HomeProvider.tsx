@@ -11,21 +11,25 @@ import {
 } from 'react';
 
 import useFetchEvents from '@/hooks/useFetchEvents';
+import useFetchSession from '@/hooks/useFetchSession';
 import HomeContextState from '@/types/context';
 
 const HomeContext = createContext<HomeContextState | undefined>(undefined);
 
 function HomeProvider({ children }: { children: ReactNode }) {
+  const { isAuthenticated, refetch: refetchSession } = useFetchSession();
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
   } | null>(null);
 
   const [radius, setRadius] = useState<number>(3);
-  const { events, loading, error, refetch } = useFetchEvents(
-    radius,
-    userLocation,
-  );
+  const {
+    events,
+    loading,
+    error,
+    refetch: refetchEvents,
+  } = useFetchEvents(radius, userLocation);
 
   const [categoryFilter, setCategoryFilter] = useState<EventCategory>('All');
   const [searchFilter, setSearchFilter] = useState<string>('');
@@ -52,13 +56,15 @@ function HomeProvider({ children }: { children: ReactNode }) {
 
   const contextValue = useMemo(
     () => ({
+      isAuthenticated,
+      refetchSession,
       userLocation,
       radius,
       setRadius,
       events,
       loading,
       error,
-      refetchEvents: refetch,
+      refetchEvents,
       categoryFilter,
       setCategoryFilter,
       searchFilter,
@@ -67,12 +73,14 @@ function HomeProvider({ children }: { children: ReactNode }) {
       setSelectedEventId,
     }),
     [
+      isAuthenticated,
+      refetchSession,
       userLocation,
       radius,
       events,
       loading,
       error,
-      refetch,
+      refetchEvents,
       categoryFilter,
       searchFilter,
       selectedEventId,

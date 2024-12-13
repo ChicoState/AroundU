@@ -22,8 +22,7 @@ const processSignUp: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error creating user',
-      error: (error as Error).message,
+      message: (error as Error).message,
     });
   }
 };
@@ -61,8 +60,7 @@ const processSignIn: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error signing in',
-      error: (error as Error).message,
+      message: (error as Error).message,
     });
   }
 };
@@ -82,8 +80,7 @@ const processSignOut: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error signing out',
-      error: (error as Error).message,
+      message: (error as Error).message,
     });
   }
 };

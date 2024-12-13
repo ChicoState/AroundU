@@ -5,7 +5,11 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
 
 import SignInDialog from './SignInDialog';
 
-export default function SignInButton() {
+export default function SignInButton({
+  refetchSession,
+}: {
+  refetchSession: () => void;
+}) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -13,7 +17,10 @@ export default function SignInButton() {
         <Button className="bg-blue-500 hover:bg-blue-400">Sign In</Button>
       </DialogTrigger>
       <DialogContent>
-        <SignInDialog onClose={() => setIsDialogOpen(false)} />
+        <SignInDialog
+          refetchSession={refetchSession}
+          onClose={() => setIsDialogOpen(false)}
+        />
       </DialogContent>
     </Dialog>
   );

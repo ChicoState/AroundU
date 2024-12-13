@@ -16,8 +16,7 @@ const processPostEvents: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error creating event',
-      error: (error as Error).message,
+      message: (error as Error).message,
     });
   }
 };
@@ -37,8 +36,7 @@ const processGetEvents: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error fetching events',
-      error: (error as Error).message,
+      message: (error as Error).message,
     });
   }
 };

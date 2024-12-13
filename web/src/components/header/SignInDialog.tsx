@@ -8,10 +8,14 @@ import { Label } from '@/components/ui/label';
 import useSignIn from '@/hooks/useSignIn';
 
 type SignInDialogProps = {
+  refetchSession: () => void;
   onClose: () => void;
 };
 
-export default function SignInDialog({ onClose }: SignInDialogProps) {
+export default function SignInDialog({
+  refetchSession,
+  onClose,
+}: SignInDialogProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const { signIn, loading, error } = useSignIn();
@@ -22,7 +26,7 @@ export default function SignInDialog({ onClose }: SignInDialogProps) {
       await signIn({
         username,
         password,
-      });
+      }).then(() => refetchSession());
       toast.success('Signed in successfully');
       onClose();
     } catch {

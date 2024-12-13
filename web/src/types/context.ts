@@ -1,5 +1,10 @@
 import { EventCategory, EventModel } from '@aroundu/shared';
 
+type SessionContext = {
+  isAuthenticated: boolean;
+  refetchSession: () => void;
+};
+
 type UserLocationContext = {
   userLocation: {
     lat: number;
@@ -32,6 +37,6 @@ type EventsContext = EventsQueryContext &
     }) => void;
   };
 
-type HomeContextState = UserLocationContext & EventsContext;
+type HomeContextState = SessionContext & UserLocationContext & EventsContext;
 
 export default HomeContextState;
