@@ -1,34 +1,33 @@
 'use client';
 
-import { EventData } from '@aroundu/shared';
 import { useState } from 'react';
 
-type UseCreateEventReturn = {
-  createEvent: (eventData: Omit<EventData, 'location'>) => Promise<void>;
+type UseSignOutReturn = {
+  signOut: () => Promise<void>;
   loading: boolean;
   error: string | null;
 };
 
-export default function useCreateEvent(): UseCreateEventReturn {
+export default function useSignOut(): UseSignOutReturn {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  const createEvent = async (eventData: Omit<EventData, 'location'>) => {
+  const signOut = async () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('http://localhost:3001/events', {
+      const response = await fetch('http://localhost:3001/auth/sign-out', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(eventData),
+        body: JSON.stringify({}),
         credentials: 'include',
       });
       if (!response.ok) {
         const resData = await response.json();
-        setError(resData.message || 'Failed to create event');
-        throw new Error(resData.message || 'Failed to create event');
+        setError(resData.message || 'Failed to sign out');
+        throw new Error(resData.message || 'Failed to sign out');
       }
     } catch (err) {
       throw err as Error;
@@ -37,5 +36,5 @@ export default function useCreateEvent(): UseCreateEventReturn {
     }
   };
 
-  return { createEvent, loading, error };
+  return { signOut, loading, error };
 }

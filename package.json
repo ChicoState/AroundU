@@ -2,6 +2,10 @@
   "name": "aroundu",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "20.17.0",
+    "npm": "10.8.2"
+  },
   "scripts": {
     "test": "echo \"run tests\"",
     "prepare": "husky"
