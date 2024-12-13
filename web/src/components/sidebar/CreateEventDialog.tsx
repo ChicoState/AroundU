@@ -45,8 +45,8 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
       toast.success('Event created successfully');
       refetchEvents();
       onClose();
-    } catch (err) {
-      toast.error(`Failed to create event: ${(err as Error).message}`);
+    } catch (error) {
+      toast.error(`Failed to create event: ${(error as Error).message}`);
     }
   };
 
@@ -92,19 +92,21 @@ export default function CreateEventDialog({ onClose }: CreateEventDialogProps) {
             placeholder="Enter event description (optional)"
           />
         </div>
-        <Label>Category</Label>
-        <Select onValueChange={(value: EventCategory) => setCategory(value)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a category" />
-          </SelectTrigger>
-          <SelectContent className="bg-white">
-            <SelectItem value="Concert">Concert</SelectItem>
-            <SelectItem value="Happy Hour">Happy Hour</SelectItem>
-            <SelectItem value="Karaoke">Karaoke</SelectItem>
-            <SelectItem value="Yard Sale">Yard Sale</SelectItem>
-            <SelectItem value="Other">Other</SelectItem>
-          </SelectContent>
-        </Select>
+        <div>
+          <Label>Category</Label>
+          <Select onValueChange={(value: EventCategory) => setCategory(value)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select a category" />
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectItem value="Concert">Concert</SelectItem>
+              <SelectItem value="Happy Hour">Happy Hour</SelectItem>
+              <SelectItem value="Karaoke">Karaoke</SelectItem>
+              <SelectItem value="Yard Sale">Yard Sale</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button
           className="ml-auto flex space-x-2"
           type="submit"

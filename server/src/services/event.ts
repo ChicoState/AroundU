@@ -1,25 +1,12 @@
 import Event from '@/models/Event';
+import geocodeService from '@/services/geocode';
 import { EventData, EventModel, EventQuery } from '@aroundu/shared';
-import axios from 'axios';
 import { FilterQuery } from 'mongoose';
 
 const create = async (partialEventData: Omit<EventData, 'location'>) => {
   try {
     const { address } = partialEventData;
-    const geocodeResponse = await axios.get(
-      'https://maps.googleapis.com/maps/api/geocode/json',
-      {
-        params: {
-          address,
-          key: process.env.GOOGLE_MAPS_API_KEY,
-        },
-      },
-    );
-    if (geocodeResponse.data.status === 'ZERO_RESULTS') {
-      throw new Error('Invalid address or unable to geocode.');
-    }
-    const { location } = geocodeResponse.data.results[0].geometry;
-    const { lat, lng } = location;
+    const { lat, lng } = await geocodeService.geocodeAddress(address);
     const eventData = {
       ...partialEventData,
       location: {
@@ -43,6 +30,9 @@ const fetch = async (query: EventQuery) => {
     }
     if (query.address) {
       filters.address = { $regex: query.address, $options: 'i' };
+    }
+    if (query.category) {
+      filters.category = query.category;
     }
     if (query.lat && query.lng && query.radius) {
       const radiusInMeters = query.radius * 1000;

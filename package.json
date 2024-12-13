@@ -7,7 +7,8 @@
     "npm": "10.8.2"
   },
   "scripts": {
-    "test": "echo \"run tests\"",
+    "test": "cd server && npm run test",
+    "test:coverage": "cd server && npm run test:coverage",
     "prepare": "husky"
   },
   "license": "MIT",

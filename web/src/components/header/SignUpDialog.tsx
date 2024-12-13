@@ -18,7 +18,7 @@ export default function SignUpDialog({
 }: SignUpDialogProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const { signUp, loading, error } = useSignUp();
+  const { signUp, loading } = useSignUp();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,8 +29,8 @@ export default function SignUpDialog({
       }).then(() => refetchSession());
       toast.success('Signed up successfully');
       onClose();
-    } catch {
-      toast.error(`Failed to sign up: ${error}`);
+    } catch (error) {
+      toast.error(`Failed to sign up: ${(error as Error).message}`);
     }
   };
 

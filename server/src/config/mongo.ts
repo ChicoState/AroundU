@@ -5,12 +5,13 @@ const mongoUrl =
 
 let isConnected = false;
 
-const connect = async () => {
+const connect = async (fromLocal?: boolean) => {
   try {
     if (!isConnected) {
-      await mongoose.connect(mongoUrl);
+      await mongoose.connect(
+        fromLocal ? 'mongodb://localhost:27017/aroundu_db' : mongoUrl,
+      );
       isConnected = true;
-      console.log('> Connected to MongoDB using Mongoose');
     }
   } catch (error) {
     console.error('> MongoDB connection failed', (error as Error).message);
@@ -22,7 +23,6 @@ const disconnect = async () => {
   if (isConnected) {
     await mongoose.disconnect();
     isConnected = false;
-    console.log('> MongoDB connection closed');
   }
 };
 

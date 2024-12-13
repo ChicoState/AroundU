@@ -7,7 +7,7 @@ services:
     volumes:
       - redis_data:/data
     networks:
-      - app
+      - app-network
 
   aroundu-mongo:
     image: mongo:latest
@@ -63,4 +63,6 @@ networks:
 
 volumes:
   mongo_data:
+    driver: local
+  redis_data:
     driver: local

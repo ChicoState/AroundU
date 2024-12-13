@@ -1,24 +1,15 @@
 import { RequestHandler } from 'express';
 import userService from '@/services/user';
+import sessionService from '@/services/session';
 import bcrypt from 'bcryptjs';
 
 const processSignUp: RequestHandler = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const newUser = await userService.create({
-      username,
-      password,
-    });
+    const newUser = await userService.create({ username, password });
     req.session.userId = newUser._id;
-    return req.session.save((err) => {
-      if (err) {
-        res
-          .status(500)
-          .json({ success: false, message: 'Session save failed' });
-      } else {
-        res.status(201).json({ success: true, data: newUser });
-      }
-    });
+    await sessionService.save(req);
+    return res.status(201).json({ success: true, data: newUser });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -48,15 +39,8 @@ const processSignIn: RequestHandler = async (req, res) => {
       });
     }
     req.session.userId = user[0]._id;
-    return req.session.save((err) => {
-      if (err) {
-        res
-          .status(500)
-          .json({ success: false, message: 'Session save failed' });
-      } else {
-        res.status(201).json({ success: true });
-      }
-    });
+    await sessionService.save(req);
+    return res.status(201).json({ success: true });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -67,15 +51,7 @@ const processSignIn: RequestHandler = async (req, res) => {
 
 const processSignOut: RequestHandler = async (req, res) => {
   try {
-    await new Promise((resolve, reject) => {
-      req.session.destroy((error) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(null);
-        }
-      });
-    });
+    await sessionService.destroy(req);
     return res.status(200).json({ success: true });
   } catch (error) {
     return res.status(500).json({

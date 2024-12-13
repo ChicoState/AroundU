@@ -6,7 +6,9 @@ const authenticationHandler = (
   next: NextFunction,
 ) => {
   if (!req.session.userId) {
-    return res.status(401).json({ message: 'Forbidden: Unauthorized access.' });
+    return res
+      .status(401)
+      .json({ success: false, message: 'Forbidden: Unauthorized access.' });
   }
   return next();
 };
