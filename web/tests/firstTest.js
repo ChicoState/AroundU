@@ -19,7 +19,7 @@ import { Builder, Browser, By, Key, until, WebElement, Select } from 'selenium-w
 
     //Address
     var element3 = await driver.findElement(By.css('[placeholder="Enter event address"]'));
-    element3.sendKeys("Test Addr");
+    element3.sendKeys("400 W 1st St, Chico, CA 95929");
 
     //Description
     var element4 = await driver.findElement(By.css('[placeholder="Enter event description (optional)"]'));
