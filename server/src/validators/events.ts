@@ -22,11 +22,14 @@ const validatePostEvents: RequestHandler = (req, res, next) => {
 
 const validateGetEvents: RequestHandler = (req, res, next) => {
   const schema = Joi.object({
-    date: Joi.date().iso().optional(),
-    address: Joi.string().optional(),
     lat: Joi.number().required(),
     lng: Joi.number().required(),
     radius: Joi.number().min(1).max(100).required(),
+    date: Joi.date().iso().optional(),
+    address: Joi.string().optional(),
+    category: Joi.string()
+      .valid('Concert', 'Happy Hour', 'Karaoke', 'Yard Sale', 'Other')
+      .optional(),
   });
   const { error } = schema.validate(req.query);
   if (error) {

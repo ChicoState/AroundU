@@ -53,9 +53,9 @@ export default function SidebarEventFilters({
         </SelectContent>
       </Select>
       <Card className="relative w-full">
-        <SearchIcon className="absolute left-[.65rem] top-[1.125rem] h-[18px] w-[18px] -translate-y-1/2 transform text-black" />
+        <SearchIcon className="absolute left-[.65rem] top-[1.125rem] h-[18px] w-[18px] -translate-y-1/2 transform text-muted-foreground" />
         <Input
-          className="w-full rounded border border-gray-300 p-2 pl-9 placeholder:text-black focus:border-blue-500 focus:outline-none"
+          className="w-full rounded border border-input p-2 pl-9 placeholder:text-muted-foreground focus:border-blue-500 focus:outline-none"
           placeholder="Search..."
           value={searchFilter}
           onChange={(e) => setSearchFilter(e.target.value)}

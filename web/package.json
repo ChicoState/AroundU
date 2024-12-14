@@ -11,7 +11,7 @@
     "dev": "nodemon",
     "start": "node index.js",
     "build": "rm -rf .next && next build",
-    "test": "echo \"run tests\"",
+    "test": "node ./tests/firstTest.js",
     "check": "npm run format && npm run lint",
     "format": "prettier --log-level warn --write .",
     "format:check": "prettier --check .",
