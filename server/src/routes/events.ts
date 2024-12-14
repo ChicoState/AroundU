@@ -1,13 +1,14 @@
 import buildRoutes from '@/utils/buildRoutes';
 import { processPostEvents, processGetEvents } from '@/controllers/events';
 import { validatePostEvents, validateGetEvents } from '@/validators/events';
+import authenticationHandler from '@/middleware/auth';
 
 const eventsRoutes = buildRoutes([
   {
     method: 'post',
     path: '/events',
     validator: validatePostEvents,
-    middleware: [],
+    middleware: [authenticationHandler],
     controller: processPostEvents,
   },
   {

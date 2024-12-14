@@ -3,122 +3,121 @@
 set -e
 
 # Default flags
-CHECK=false
-SHARED=false
-SERVER=false
-WEB=false
-ALL=false
+TARGET="all"  # Options: all, shared, server, web
 VOLUME_CLEANUP=false
-ENVIRONMENT="dev"  # Default to development environment
+ENVIRONMENT="dev"  # Default environment
+COMPOSE_DOWN=false  # Flag for bringing down containers
+CHECK=false  # Flag for check only mode
 
-# Display usage information
+# Usage information
 usage() {
-  echo "Usage: $0 [--check] [--shared] [--server] [--web] [--all] [-v] [--prod|--dev]"
-  echo "  --check                   Run npm run check only (in all or specified directories)"
-  echo "  --shared                  Run check, then install, build, and test in the /shared directory"
-  echo "  --server                  Run check, then install, build, and test in the /server directory"
-  echo "  --web                     Run check, then install, build, and test in the /web directory"
-  echo "  --all                     Run check, install, build, and test in all directories (default if no other flags are provided)"
-  echo "  -v                        Run docker compose down -v before starting containers"
-  echo "  --prod                    Use docker-compose.prod.yml"
-  echo "  --dev                     Use docker-compose.dev.yml (default)"
+  echo "Usage: $0 [--shared|--server|--web|--all] [-v] [--prod|--dev] [--down] [--check]"
+  echo "  --shared    Target shared directory"
+  echo "  --server    Target server directory"
+  echo "  --web       Target web directory"
+  echo "  --all       Target all directories (default)"
+  echo "  -v          Clean Docker volumes before starting"
+  echo "  --prod      Use production environment"
+  echo "  --dev       Use development environment (default)"
+  echo "  --down      Bring down Docker containers with volumes and exit"
+  echo "  --check     Run checks only and skip build/tests"
   exit 1
 }
 
-# If no arguments are provided, set ALL to true by default
-if [ "$#" -eq 0 ]; then
-  ALL=true
-fi
-
-# Parse each argument
+# Parse arguments
 while [[ "$#" -gt 0 ]]; do
   case $1 in
-    --check) CHECK=true ;;
-    --shared) SHARED=true ;;
-    --server) SERVER=true ;;
-    --web) WEB=true ;;
-    --all) ALL=true ;;
+    --shared) TARGET="shared" ;;
+    --server) TARGET="server" ;;
+    --web) TARGET="web" ;;
+    --all) TARGET="all" ;;
     -v) VOLUME_CLEANUP=true ;;
-    --prod) ENVIRONMENT="prod" ;; 
-    --dev) ENVIRONMENT="dev" ;; 
+    --prod) ENVIRONMENT="prod" ;;
+    --dev) ENVIRONMENT="dev" ;;
+    --down) COMPOSE_DOWN=true ;;
+    --check) CHECK=true ;;
     *) usage ;;
   esac
   shift
 done
 
-# Set ALL to true if no specific directory flags are provided
-if [ "$SHARED" = false ] && [ "$SERVER" = false ] && [ "$WEB" = false ]; then
-  ALL=true
+# Function to handle Docker Compose down
+compose_down() {
+  COMPOSE_FILE="docker-compose.$ENVIRONMENT.yml"
+  echo "🐳 Bringing down Docker containers using $COMPOSE_FILE"
+  docker compose -f "$COMPOSE_FILE" down -v
+  echo "✅ Containers and volumes cleaned up"
+  exit 0
+}
+
+# Handle --down flag
+if [ "$COMPOSE_DOWN" = true ]; then
+  compose_down
 fi
 
 # Install root dependencies
-echo "======================================"
-echo "🚀 Installing root dependencies"
-echo "======================================"
-npm install
+if [ "$CHECK" = false ]; then
+  echo "🚀 Installing root dependencies"
+  npm install
+fi
 
-# Function to run npm check, install, build, and test in a given directory
+# Function to handle directory setup
 run_setup() {
   local dir=$1
-  echo "--------------------------------------"
   echo "🔧 Setting up $dir"
-  echo "--------------------------------------"
-  
   cd "$dir"
-  
+
   if [ "$CHECK" = true ]; then
-    echo "▶️  Running check in $dir"
+    echo "▶️ Running check in $dir"
     npm run check
   else
-    echo "▶️  Full setup (check, install, build, test) in $dir"
-    npm run check
+    echo "▶️ Installing dependencies in $dir"
     npm install
+    echo "▶️ Running check in $dir"
+    npm run check
+    echo "▶️ Building in $dir"
     npm run build
-    npm run test
   fi
 
   cd ..
 }
 
-# Run setup or check for each specified directory or all if ALL is true
-if [ "$ALL" = true ]; then
-  echo "======================================"
-  echo "🚀 Running setup in all directories"
-  echo "======================================"
-  run_setup "shared"
-  run_setup "server"
-  run_setup "web"
-else
-  echo "======================================"
-  echo "🚀 Running setup for specified directories"
-  echo "======================================"
-  if [ "$SHARED" = true ]; then
-    run_setup "shared"
-  fi
-  if [ "$SERVER" = true ]; then
-    run_setup "server"
-  fi
-  if [ "$WEB" = true ]; then
-    run_setup "web"
-  fi
+# Handle directory processing
+case $TARGET in
+  "all")
+    for dir in shared server web; do
+      run_setup "$dir"
+    done
+    ;;
+  *)
+    run_setup "$TARGET"
+    ;;
+esac
+
+# Skip Docker setup if in check-only mode
+if [ "$CHECK" = true ]; then
+  echo "✅ Check complete!"
+  exit 0
 fi
 
-# Only build and start Docker containers if not in check-only mode
-if [ "$CHECK" != true ]; then
-  COMPOSE_FILE="docker-compose.$ENVIRONMENT.yml"
-  echo "======================================"
-  echo "🐳 Using Docker Compose file: $COMPOSE_FILE"
-  echo "======================================"
+# Docker setup
+COMPOSE_FILE="docker-compose.$ENVIRONMENT.yml"
+echo "🐳 Using Docker Compose file: $COMPOSE_FILE"
 
-  if [ "$VOLUME_CLEANUP" = true ]; then
-    echo "🧹 Cleaning up Docker containers and volumes"
-    docker compose -f "$COMPOSE_FILE" down -v
-  fi
-
-  echo "🚀 Starting Docker containers"
-  docker compose -f "$COMPOSE_FILE" up -d --build
+if [ "$VOLUME_CLEANUP" = true ]; then
+  echo "🧹 Cleaning up Docker containers and volumes"
+  docker compose -f "$COMPOSE_FILE" down -v
 fi
 
-echo "======================================"
+echo "🚀 Starting Docker containers"
+docker compose -f "$COMPOSE_FILE" up -d --build
+
+echo "🛠️ Running tests after container deployment"
+for dir in shared server web; do
+  echo "▶️ Running tests in $dir"
+  cd "$dir"
+  npm run test
+  cd ..
+done
+
 echo "✅ Setup complete!"
-echo "======================================"

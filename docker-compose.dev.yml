@@ -1,4 +1,14 @@
 services:
+  aroundu-redis:
+    image: redis:7.4.0
+    container_name: aroundu-redis
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+
   aroundu-mongo:
     image: mongo:latest
     container_name: aroundu-mongo
@@ -52,5 +62,7 @@ networks:
     driver: bridge
 
 volumes:
+  redis_data:
+    driver: local
   mongo_data:
     driver: local

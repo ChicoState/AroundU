@@ -1,4 +1,4 @@
-import Navigation from '@/components/navigation/Navigation';
+import Header from '@/components/header/Header';
 import HomeProvider from '@/providers/HomeProvider';
 
 import Home from './home/Home';
@@ -6,7 +6,7 @@ import Home from './home/Home';
 export default function RootPage() {
   return (
     <HomeProvider>
-      <Navigation />
+      <Header />
       <Home />
     </HomeProvider>
   );

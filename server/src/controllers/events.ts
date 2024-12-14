@@ -1,11 +1,11 @@
 import { RequestHandler } from 'express';
-import eventsService from '@/services/events';
+import eventService from '@/services/event';
 import { EventCategory } from '@aroundu/shared';
 
 const processPostEvents: RequestHandler = async (req, res) => {
   try {
     const { name, date, address, description, category } = req.body;
-    const newEvent = await eventsService.create({
+    const newEvent = await eventService.create({
       name,
       date,
       address,
@@ -16,8 +16,7 @@ const processPostEvents: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error creating event',
-      error: (error as Error).message,
+      message: (error as Error).message,
     });
   }
 };
@@ -25,7 +24,7 @@ const processPostEvents: RequestHandler = async (req, res) => {
 const processGetEvents: RequestHandler = async (req, res) => {
   try {
     const { date, address, lat, lng, radius, category } = req.query;
-    const events = await eventsService.fetch({
+    const events = await eventService.fetch({
       date: date as string,
       address: address as string,
       lat: parseFloat(lat as string),
@@ -37,8 +36,7 @@ const processGetEvents: RequestHandler = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: 'Error fetching events',
-      error: (error as Error).message,
+      message: (error as Error).message,
     });
   }
 };
