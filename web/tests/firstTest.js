@@ -24,7 +24,7 @@ import { Browser, Builder, By, Key } from 'selenium-webdriver';
     const element3 = await driver.findElement(
       By.css('[placeholder="Enter event address"]'),
     );
-    element3.sendKeys('Test Addr');
+    element3.sendKeys('400 W 1st St, Chico, CA 95929');
 
     // Description
     const element4 = await driver.findElement(
